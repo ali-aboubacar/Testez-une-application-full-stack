@@ -67,7 +67,7 @@ describe('ListComponent', () => {
     expect(createBtn).toBeNull();
   });
 
-  it('should display the "Create" button for admin user', async() => {
+  it('should display the "Create" button for admin user',() => {
     component['sessionService'].sessionInformation = {admin: true} as any;
     fixture.detectChanges();
 
@@ -75,6 +75,15 @@ describe('ListComponent', () => {
     expect(createBtn).not.toBeNull();
   });
 
-  it('')
+  it('should navigate to the details page when "Details" button is clicked', async() => {
+    await fixture.whenStable();
+    const detailBtn = fixture.debugElement.query(By.css('button[ng-reflect-router-link*=detail]'));
+    expect(detailBtn).toBeTruthy();
+
+    expect(detailBtn.attributes['ng-reflect-router-link']).toContain('detail');
+    detailBtn.nativeElement.click();
+    fixture.detectChanges();
+
+  });
 
 });
