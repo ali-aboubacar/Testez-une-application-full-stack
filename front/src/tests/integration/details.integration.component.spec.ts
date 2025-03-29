@@ -123,7 +123,6 @@ describe('DetailComponent', () => {
 
     const unParticipate = fixture.debugElement.query(By.css('button[mat-raised-button][color="warn"]'));
     expect(unParticipate).not.toBeNull();
-    console.log('my button is clicked');
 
     unParticipate.nativeElement.click();
 
