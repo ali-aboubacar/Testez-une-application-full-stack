@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LoginRequestTest {
+public class LoginRequestUnitTest {
     @Test
     void testGettersAndSetters() {
         // Création de l'objet LoginRequest

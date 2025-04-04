@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-class SessionControllerTest {
+class SessionControllerUnitTest {
 
     @Mock
     private SessionService sessionService;

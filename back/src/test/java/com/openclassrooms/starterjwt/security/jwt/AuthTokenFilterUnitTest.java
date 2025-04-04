@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-public class AuthTokenFilterTest {
+public class AuthTokenFilterUnitTest {
     private AuthTokenFilter authTokenFilter;
 
     @Mock

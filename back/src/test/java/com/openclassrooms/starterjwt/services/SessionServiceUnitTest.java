@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
-class SessionServiceTest {
+class SessionServiceUnitTest {
 
     @Mock
     private SessionRepository sessionRepository;

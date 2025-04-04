@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserMapperTest {
+public class UserMapperUnitTest {
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @Test

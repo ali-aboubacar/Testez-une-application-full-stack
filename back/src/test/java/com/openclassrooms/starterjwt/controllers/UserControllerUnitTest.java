@@ -20,9 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-class UserControllerTest {
+class UserControllerUnitTest {
 
     @Mock
     private UserService userService;

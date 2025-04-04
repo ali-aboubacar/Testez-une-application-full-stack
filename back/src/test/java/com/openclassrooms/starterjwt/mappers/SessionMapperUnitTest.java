@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-public class SessionMapperTest {
+public class SessionMapperUnitTest {
 
     @Mock
     private TeacherService teacherService;

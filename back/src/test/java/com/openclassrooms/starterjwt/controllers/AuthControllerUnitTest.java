@@ -26,7 +26,7 @@ import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 
 import java.util.Optional;
 
-class AuthControllerTest {
+class AuthControllerUnitTest {
 
     @Mock
     private AuthenticationManager authenticationManager;

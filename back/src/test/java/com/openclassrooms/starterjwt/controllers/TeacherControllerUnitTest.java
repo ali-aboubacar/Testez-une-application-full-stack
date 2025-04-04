@@ -18,10 +18,9 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-class TeacherControllerTest {
+class TeacherControllerUnitTest {
 
     @Mock
     private TeacherService teacherService;

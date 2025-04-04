@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TeacherMapperTest {
+public class TeacherMapperUnitTest {
     private final TeacherMapper teacherMapper = new TeacherMapperImpl();
 
     @Test

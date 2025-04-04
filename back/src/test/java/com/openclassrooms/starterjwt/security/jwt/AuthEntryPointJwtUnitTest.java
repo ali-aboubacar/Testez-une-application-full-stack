@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-public class AuthEntryPointJwtTest {
+public class AuthEntryPointJwtUnitTest {
     private AuthEntryPointJwt authEntryPointJwt;
 
     @Mock

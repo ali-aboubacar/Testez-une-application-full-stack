@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SignupRequestTest {
+public class SignupRequestUnitTest {
     private Validator validator;
 
     @BeforeEach

@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-public class JwtUtilsTest {
+public class JwtUtilsUnitTest {
     private JwtUtils jwtUtils;
 
     @Mock

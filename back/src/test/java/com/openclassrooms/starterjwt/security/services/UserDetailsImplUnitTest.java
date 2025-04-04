@@ -3,7 +3,7 @@ package com.openclassrooms.starterjwt.security.services;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class UserDetailsImplTest {
+public class UserDetailsImplUnitTest {
 
     @Test
     void testBuilderAndGetters() {

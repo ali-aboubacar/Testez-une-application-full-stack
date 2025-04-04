@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JwtResponseTest {
+public class JwtResponseUnitTest {
     @Test
     void testConstructorAndGetters() {
         // Création de l'objet JwtResponse
