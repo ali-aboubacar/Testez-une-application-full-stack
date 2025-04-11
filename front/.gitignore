@@ -10,7 +10,7 @@
 /node_modules
 npm-debug.log
 yarn-error.log
-
+.nyc_output
 # IDEs and editors
 .idea/
 .project
