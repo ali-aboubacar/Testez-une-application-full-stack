@@ -99,6 +99,7 @@ describe('formComponent', () => {
 
         fixture = TestBed.createComponent(FormComponent);
         component = fixture.componentInstance;
+        mockHttpClient =TestBed.inject(HttpClient)
         httpTestingController = TestBed.inject(HttpTestingController);
 
     });

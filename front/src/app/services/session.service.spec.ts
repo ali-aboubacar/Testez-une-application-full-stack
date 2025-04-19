@@ -37,7 +37,7 @@ describe('SessionService', () => {
 
   });
 
-  it('should be login', () => {
+  it('should not be login', () => {
      const spyNext = jest.spyOn(service as any, 'next');
 
      service.logOut();
