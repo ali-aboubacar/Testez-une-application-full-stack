@@ -1,5 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { DebugElement, inject } from '@angular/core';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Component, DebugElement, inject } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -18,43 +19,30 @@ import { ListComponent } from 'src/app/features/sessions/components/list/list.co
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
 import { SessionService } from 'src/app/services/session.service';
 
-jest.mock('src/app/features/auth/services/auth.service');
-
-class MockRouter {
-    navigate = jest.fn();
-    url = 'sessions';
-}
+@Component({ template: '' })
+class DummyComponent {}
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-  let authService: jest.Mocked<AuthService>;
+  let httpMock: HttpTestingController;
+  let router: Router;
   let sessionService: SessionService;
-  let mockRouter: MockRouter;
-  let mockHttpClient: jest.Mocked<HttpClient>;
-
-
 
   beforeEach(async () => {
-    mockHttpClient = {
-        post: jest.fn()
-    } as any;
-    mockRouter = new MockRouter();
-    authService = new AuthService(mockHttpClient) as jest.Mocked<AuthService>;
-    authService.login = jest.fn().mockReturnValue(of({id: 1, token:'valid token'}));
-
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
       providers: [
         FormBuilder,
-        { provide: AuthService, useValue: authService },
-        { provide: SessionService, useValue: { logIn: jest.fn() } },
-        { provide: Router, useValue: mockRouter }
+        AuthService,
+        SessionService
       ],
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([
+          { path: 'sessions', component: DummyComponent }
+        ]),
         BrowserAnimationsModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         MatCardModule,
         MatIconModule,
         MatFormFieldModule,
@@ -65,6 +53,10 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     sessionService = TestBed.inject(SessionService);
+    httpMock = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate');
+    jest.spyOn(sessionService, 'logIn');
     fixture.detectChanges();
   });
 
@@ -78,56 +70,43 @@ describe('LoginComponent', () => {
   });
 
   it('should enable submit button when form is valid', () => {
-    const emailInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="email"]')).nativeElement;
-    const passwordInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
-    emailInput.value = 'test@email.com';
-    passwordInput.value = 'Password';
-    emailInput.dispatchEvent(new Event('input'));
-    passwordInput.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
+    setFormValues('test@email.com', 'Password123')
 
     const submitBtn: DebugElement = fixture.debugElement.query(By.css('button[type="submit"]'));
     expect(submitBtn.nativeElement.disabled).toBeFalsy();
   });
 
-  it('should call login method when form is valid', () => {
-    const emailInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="email"]')).nativeElement;
-    const passwordInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
-    emailInput.value = 'test@email.com';
-    passwordInput.value = 'Password';
-    emailInput.dispatchEvent(new Event('input'));
-    passwordInput.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
+  it('should call login method when form is valid', fakeAsync(() => {
+    setFormValues('test@email.com', 'Password123');
 
     const loginResponse: SessionInformation = { id: 1, token: 'valid_token' } as SessionInformation;
-
-    authService.login = jest.fn().mockReturnValue(of(loginResponse));
     component.submit();
 
-    expect(authService.login).toHaveBeenCalledWith({ email: 'test@email.com', password: 'Password' });
-    expect(sessionService.logIn).toHaveBeenCalledWith(loginResponse);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions'])
-  });
+    const req = httpMock.expectOne('api/auth/login');
+    expect(req.request.method).toBe('POST');
+    req.flush(loginResponse);
 
-  it('should display error message when login fails', () => {
-    const emailInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="email"]')).nativeElement;
-    const passwordInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
-    emailInput.value = 'test@email.com';
-    passwordInput.value = 'Password';
-    emailInput.dispatchEvent(new Event('input'));
-    passwordInput.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
+    tick();
+    expect(sessionService.logIn).toHaveBeenCalledWith(loginResponse);
+    expect(router.navigate).toHaveBeenCalledWith(['/sessions'])
+  }));
+
+  it('should display error message when login fails', fakeAsync(() => {
+    setFormValues('wrong@email.com', 'wrongPassword');
 
     const errorResponse = 'Invalid credentials';
-    authService.login = jest.fn().mockReturnValue(throwError(() => new Error(errorResponse)));
     component.submit();
 
+    const req = httpMock.expectOne('api/auth/login');
+    req.flush('Invalid credentials', { status: 401, statusText: 'Unauthorized' });
+
+    tick();
     fixture.detectChanges();
 
     const errorElement = fixture.debugElement.query(By.css('.error'));
     expect(errorElement).toBeTruthy();
     expect(errorElement.nativeElement.textContent).toBe('An error occurred');
-  });
+  }));
 
   it('should hide/show password when eye iconis clicked', () => {
     const passwordInput: HTMLInputElement = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
@@ -143,4 +122,14 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
     expect(passwordInput.type).toBe('password');
   });
+
+  function setFormValues(email: string, password: string) {
+    const emailInput = fixture.debugElement.query(By.css('input[formControlName="email"]')).nativeElement;
+    const passwordInput = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
+    emailInput.value = email;
+    passwordInput.value = password;
+    emailInput.dispatchEvent(new Event('input'));
+    passwordInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+  }
 });
