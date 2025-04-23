@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve",
-    "test": "jest",
+    "test:unit": "jest --coverage --testPathIgnorePatterns=tests/integration",
+    "test:integration": "jest --coverage --testPathPattern=tests/integration",
     "test:watch": "jest --watch",
     "lint": "ng lint",
     "e2e": "ng e2e",
